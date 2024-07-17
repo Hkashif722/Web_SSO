@@ -10,27 +10,80 @@ import UIKit
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    var window: UIWindow?
 
-
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-        return true
+    func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        if url.scheme == "edgesso" {
+            if let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+               let queryItems = components.queryItems {
+                for item in queryItems {
+                    if item.name == "code", let authorizationCode = item.value {
+                        // Handle the authorization code, e.g., exchange it for tokens
+                        print("Authorization Code: \(authorizationCode)")
+                        // Mock the token exchange
+                        exchangeAuthorizationCode(for: authorizationCode)
+                    }
+                }
+            }
+            return true
+        }
+        return false
     }
+    
+    func exchangeAuthorizationCode(for code: String) {
+        let config = URLSessionConfiguration.default
+        config.protocolClasses = [MockURLProtocol.self]
+        let session = URLSession(configuration: config)
+        
+        MockURLProtocol.requestHandler = { request in
+            let data = """
+            {
+                "access_token": "mock_access_token",
+                "refresh_token": "mock_refresh_token",
+                "expires_in": 3600
+            }
+            """.data(using: .utf8)!
+            
+            let response = HTTPURLResponse(url: request.url!,
+                                           statusCode: 200,
+                                           httpVersion: nil,
+                                           headerFields: nil)!
+            return (response, data)
+        }
+        
+        let tokenUrlString = "https://your-sso-provider.com/token"
+        let clientId = "YOUR_CLIENT_ID"
+        let clientSecret = "YOUR_CLIENT_SECRET"
+        let redirectUri = "edgesso://callback"
 
-    // MARK: UISceneSession Lifecycle
-
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
-        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+        var request = URLRequest(url: URL(string: tokenUrlString)!)
+        request.httpMethod = "POST"
+        let bodyString = "grant_type=authorization_code&" +
+                         "code=\(code)&" +
+                         "redirect_uri=\(redirectUri)&" +
+                         "client_id=\(clientId)&" +
+                         "client_secret=\(clientSecret)"
+        request.httpBody = bodyString.data(using: .utf8)
+        
+        let task = session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error: \(error)")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    print("Mock Response JSON: \(json)")
+                }
+            } catch {
+                print("JSON parsing error: \(error)")
+            }
+        }
+        task.resume()
     }
-
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
-    }
-
-
 }
-

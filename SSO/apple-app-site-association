@@ -1,0 +1,12 @@
+
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "YOUR_TEAM_ID.com.kashifh.SSO",
+                "paths": [ "/auth/proxy" ]
+            }
+        ]
+    }
+}

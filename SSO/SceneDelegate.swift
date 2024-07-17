@@ -1,52 +1,83 @@
-//
-//  SceneDelegate.swift
-//  SSO
-//
-//  Created by Kashif Hussain on 17/07/24.
-//
-
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let url = URLContexts.first?.url else {
+            return
+        }
+        if url.scheme == "edgesso" {
+            if let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+               let queryItems = components.queryItems {
+                for item in queryItems {
+                    if item.name == "code", let authorizationCode = item.value {
+                        // Handle the authorization code, e.g., exchange it for tokens
+                        print("Authorization Code: \(authorizationCode)")
+                        // Mock the token exchange
+                        exchangeAuthorizationCode(for: authorizationCode)
+                    }
+                }
+            }
+        }
     }
 
-    func sceneDidDisconnect(_ scene: UIScene) {
-        // Called as the scene is being released by the system.
-        // This occurs shortly after the scene enters the background, or when its session is discarded.
-        // Release any resources associated with this scene that can be re-created the next time the scene connects.
-        // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
+    func exchangeAuthorizationCode(for code: String) {
+        let config = URLSessionConfiguration.default
+        config.protocolClasses = [MockURLProtocol.self]
+        let session = URLSession(configuration: config)
+        
+        MockURLProtocol.requestHandler = { request in
+            let data = """
+            {
+                "access_token": "mock_access_token",
+                "refresh_token": "mock_refresh_token",
+                "expires_in": 3600
+            }
+            """.data(using: .utf8)!
+            
+            let response = HTTPURLResponse(url: request.url!,
+                                           statusCode: 200,
+                                           httpVersion: nil,
+                                           headerFields: nil)!
+            return (response, data)
+        }
+        
+        let tokenUrlString = "https://your-sso-provider.com/token"
+        let clientId = "YOUR_CLIENT_ID"
+        let clientSecret = "YOUR_CLIENT_SECRET"
+        let redirectUri = "edgesso://callback"
+
+        var request = URLRequest(url: URL(string: tokenUrlString)!)
+        request.httpMethod = "POST"
+        let bodyString = "grant_type=authorization_code&" +
+                         "code=\(code)&" +
+                         "redirect_uri=\(redirectUri)&" +
+                         "client_id=\(clientId)&" +
+                         "client_secret=\(clientSecret)"
+        request.httpBody = bodyString.data(using: .utf8)
+        
+        let task = session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error: \(error)")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    print("Mock Response JSON: \(json)")
+                }
+            } catch {
+                print("JSON parsing error: \(error)")
+            }
+        }
+        task.resume()
     }
-
-    func sceneDidBecomeActive(_ scene: UIScene) {
-        // Called when the scene has moved from an inactive state to an active state.
-        // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
-    }
-
-    func sceneWillResignActive(_ scene: UIScene) {
-        // Called when the scene will move from an active state to an inactive state.
-        // This may occur due to temporary interruptions (ex. an incoming phone call).
-    }
-
-    func sceneWillEnterForeground(_ scene: UIScene) {
-        // Called as the scene transitions from the background to the foreground.
-        // Use this method to undo the changes made on entering the background.
-    }
-
-    func sceneDidEnterBackground(_ scene: UIScene) {
-        // Called as the scene transitions from the foreground to the background.
-        // Use this method to save data, release shared resources, and store enough scene-specific state information
-        // to restore the scene back to its current state.
-    }
-
-
 }
 

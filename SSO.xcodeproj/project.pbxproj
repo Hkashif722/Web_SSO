@@ -13,6 +13,8 @@
 		AEDEBA142C471A3A00C44353 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEDEBA122C471A3A00C44353 /* Main.storyboard */; };
 		AEDEBA162C471A3C00C44353 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEDEBA152C471A3C00C44353 /* Assets.xcassets */; };
 		AEDEBA192C471A3C00C44353 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEDEBA172C471A3C00C44353 /* LaunchScreen.storyboard */; };
+		AEDEBA212C471A4C00C44353 /* MockURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDEBA202C471A4C00C44353 /* MockURLProtocol.swift */; };
+		AEDEBA232C47424E00C44353 /* apple-app-site-association in Resources */ = {isa = PBXBuildFile; fileRef = AEDEBA222C47424E00C44353 /* apple-app-site-association */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		AEDEBA152C471A3C00C44353 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AEDEBA182C471A3C00C44353 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AEDEBA1A2C471A3C00C44353 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AEDEBA202C471A4C00C44353 /* MockURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLProtocol.swift; sourceTree = "<group>"; };
+		AEDEBA222C47424E00C44353 /* apple-app-site-association */ = {isa = PBXFileReference; lastKnownFileType = text; path = "apple-app-site-association"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,12 +61,14 @@
 			isa = PBXGroup;
 			children = (
 				AEDEBA0C2C471A3A00C44353 /* AppDelegate.swift */,
+				AEDEBA222C47424E00C44353 /* apple-app-site-association */,
 				AEDEBA0E2C471A3A00C44353 /* SceneDelegate.swift */,
 				AEDEBA102C471A3A00C44353 /* ViewController.swift */,
 				AEDEBA122C471A3A00C44353 /* Main.storyboard */,
 				AEDEBA152C471A3C00C44353 /* Assets.xcassets */,
 				AEDEBA172C471A3C00C44353 /* LaunchScreen.storyboard */,
 				AEDEBA1A2C471A3C00C44353 /* Info.plist */,
+				AEDEBA202C471A4C00C44353 /* MockURLProtocol.swift */,
 			);
 			path = SSO;
 			sourceTree = "<group>";
@@ -127,6 +133,7 @@
 			files = (
 				AEDEBA192C471A3C00C44353 /* LaunchScreen.storyboard in Resources */,
 				AEDEBA162C471A3C00C44353 /* Assets.xcassets in Resources */,
+				AEDEBA232C47424E00C44353 /* apple-app-site-association in Resources */,
 				AEDEBA142C471A3A00C44353 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -141,6 +148,7 @@
 				AEDEBA112C471A3A00C44353 /* ViewController.swift in Sources */,
 				AEDEBA0D2C471A3A00C44353 /* AppDelegate.swift in Sources */,
 				AEDEBA0F2C471A3A00C44353 /* SceneDelegate.swift in Sources */,
+				AEDEBA212C471A4C00C44353 /* MockURLProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
